@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>seberapa belok anda </title>
+  <title>Deteksi Persentase LGBT</title>
   <style>
     body {
       background-color: #111;
@@ -11,12 +11,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 50px;
+      padding: 40px;
     }
     input, button {
       padding: 10px;
-      font-size: 18px;
-      margin: 10px;
+      font-size: 16px;
+      margin: 5px;
       border-radius: 6px;
       border: none;
     }
@@ -27,20 +27,45 @@
     }
     .result {
       margin-top: 30px;
-      font-size: 22px;
+      font-size: 20px;
       text-align: center;
       padding: 15px;
       border-radius: 10px;
       background-color: #222;
     }
+    .citer {
+      background-color: #440000;
+      color: #ff4b4b;
+      font-weight: bold;
+    }
+    .form-box {
+      background-color: #1a1a1a;
+      padding: 15px;
+      margin-top: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+    }
+    h1, h2 {
+      color: #00ffd5;
+    }
   </style>
 </head>
 <body>
 
-  <h1>apakah anda LGBT</h1>
-  <input type="text" id="namaInput" placeholder="INFUT NAMA">
+  <h1>Deteksi Persentase LGBT</h1>
+
+  <input type="text" id="namaInput" placeholder="Masukkan nama kamu...">
   <button onclick="hitungLGBT()">Hitung</button>
-  <div id="hasilOutput" class="result">NAMA ASLI YA.</div>
+  <div id="hasilOutput" class="result">Masukkan nama terlebih dahulu.</div>
+
+  <div class="form-box">
+    <h2>Tambah Nama Premium</h2>
+    <input type="text" id="premiumNama" placeholder="Nama premium">
+    <input type="text" id="pesanPremium" placeholder="Pesan custom">
+    <button onclick="tambahPremium()">Tambahkan</button>
+    <p style="font-size: 14px; color: #aaa;">Nama akan dianggap premium dan diberi kode PUB OP acak.</p>
+  </div>
 
   <script>
     const nilaiHuruf = {
@@ -49,38 +74,39 @@
       t: 16, u: -11, v: -1000, w: 19, x: 10000, y: -3, z: 10000
     };
 
+    let namaPremium = {
+      "RAhmat": "ampun devloper",
+    };
+
     function getPesan(persen) {
-      if (persen <= -1000) {
-        return "🪽 Bro kau malaikat sejati (" + persen + "%)";
-      } else if (persen <= -800) {
-        return "🧬 Bro kau bukan manusia (" + persen + "%)";
-      } else if (persen < 0) {
-        return "✨ Bro anda sangat suci (" + persen + "%)";
-      } else if (persen === 0) {
-        return "⚪ Bro netral suci, belum tersentuh (0%)";
-      } else if (persen <= 20) {
-        return "🙂 Bro kau masih normal (" + persen + "%)";
-      } else if (persen <= 40) {
-        return "🤨 Bro kau rada curiga sih (" + persen + "%)";
-      } else if (persen <= 60) {
-        return "😬 Bro kau diambang batas (" + persen + "%)";
-      } else if (persen <= 80) {
-        return "😳 Bro kau nggak bisa diselamatkan (" + persen + "%)";
-      } else if (persen <= 99) {
-        return "💀 Bro kau hampir tamat (" + persen + "%)";
-      } else if (persen === 100) {
-        return "☠ Bro kau sudah tidak tertolong (100%)";
-      } else if (persen < 10000) {
-        return "🔥 Bro kau meluncur ke neraka (" + persen + "%)";
-      } else {
-        return "💣 Bro kau pantas mati (" + persen + "%)";
-      }
+      if (persen <= -1000) return "🪽 Bro kau malaikat sejati (" + persen + "%)";
+      if (persen <= -800) return "🧬 Bro kau bukan manusia (" + persen + "%)";
+      if (persen < 0) return "✨ Bro anda sangat suci (" + persen + "%)";
+      if (persen === 0) return "⚪ Bro netral suci, belum tersentuh (0%)";
+      if (persen <= 20) return "🙂 Bro kau masih normal (" + persen + "%)";
+      if (persen <= 40) return "🤨 Bro kau rada curiga sih (" + persen + "%)";
+      if (persen <= 60) return "😬 Bro kau diambang batas (" + persen + "%)";
+      if (persen <= 80) return "😳 Bro kau nggak bisa diselamatkan (" + persen + "%)";
+      if (persen <= 99) return "💀 Bro kau hampir tamat (" + persen + "%)";
+      if (persen === 100) return "☠ Bro kau sudah tidak tertolong (100%)";
+      if (persen < 10000) return "🔥 Bro kau meluncur ke neraka (" + persen + "%)";
+      return "💣 Bro kau pantas mati (" + persen + "%)";
     }
 
     function hitungLGBT() {
-      const input = document.getElementById("namaInput").value.toLowerCase();
-      let total = 0;
+      const input = document.getElementById("namaInput").value.trim().toLowerCase();
+      const hasil = document.getElementById("hasilOutput");
 
+      // Deteksi nama premium
+      if (namaPremium.hasOwnProperty(input)) {
+        const kode = Math.floor(Math.random() * 90000) + 10000;
+        hasil.innerText = 💻 Halah citer! ${namaPremium[input]} (PUB OP CODE: ${kode});
+        hasil.className = "result citer";
+        return;
+      }
+
+      // Hitung persentase
+      let total = 0;
       for (let i = 0; i < input.length; i++) {
         const huruf = input[i];
         if (nilaiHuruf.hasOwnProperty(huruf)) {
@@ -89,9 +115,22 @@
       }
 
       if (total > 100000) total = 100000;
-
-      const hasil = document.getElementById("hasilOutput");
       hasil.innerText = getPesan(total);
+      hasil.className = "result";
+    }
+
+    function tambahPremium() {
+      const nama = document.getElementById("premiumNama").value.trim().toLowerCase();
+      const pesan = document.getElementById("pesanPremium").value.trim();
+
+      if (nama && pesan) {
+        namaPremium[nama] = pesan;
+        alert(Nama "${nama}" berhasil ditambahkan sebagai premium/citer.);
+        document.getElementById("premiumNama").value = '';
+        document.getElementById("pesanPremium").value = '';
+      } else {
+        alert("INFUT NAMA!");
+      }
     }
   </script>
 
