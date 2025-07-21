@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>cek kewarasan</title>
+  <title>Cek Kewarasan</title>
   <style>
     body {
       background-color: #111;
@@ -54,10 +54,10 @@
 </head>
 <body>
 
-  <h1>apakah kau belok</h1>
+  <h1>Apakah Kau Belok?</h1>
 
   <input type="text" id="namaInput" placeholder="Masukkan nama kamu...">
-  <button onclick="hitungLGBT()">periksa</button>
+  <button onclick="hitungLGBT()">Periksa</button>
   <div id="hasilOutput" class="result">Masukkan nama terlebih dahulu.</div>
 
   <div class="form-box" id="formPremium">
@@ -75,11 +75,14 @@
       t: 16, u: -11, v: -1000, w: 19, x: 10000, y: -3, z: 10000
     };
 
-    let namaPremium = {
-      "rahmat": "ampun dev",
-    };
-
+    let namaPremium = {}; // Kosong dulu, akan diisi dari localStorage
     let developerAktif = false;
+
+    // Load data dari localStorage saat halaman dibuka
+    const dataSebelumnya = localStorage.getItem("premiumData");
+    if (dataSebelumnya) {
+      namaPremium = JSON.parse(dataSebelumnya);
+    }
 
     function getPesan(persen) {
       if (persen <= -1000) return "🪽 Bro kau malaikat sejati (" + persen + "%)";
@@ -112,7 +115,7 @@
       if (namaPremium.hasOwnProperty(input)) {
         hasil.innerHTML = `
           ${namaPremium[input]}<br>
-          <strong> 1000% kamu normal</strong>
+          <strong>kamu 100% normal 😁</strong>
         `;
         hasil.className = "result citer";
         return;
@@ -142,7 +145,8 @@
 
       if (nama && pesan) {
         namaPremium[nama] = pesan;
-        alert(✅ Nama premium "${nama}" berhasil ditambahkan.);
+        localStorage.setItem("premiumData", JSON.stringify(namaPremium)); // Simpan ke browser
+        alert(`✅ Nama premium "${nama}" berhasil ditambahkan.`);
         document.getElementById("premiumNama").value = '';
         document.getElementById("pesanPremium").value = '';
       } else {
