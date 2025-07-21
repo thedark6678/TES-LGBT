@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Deteksi Persentase LGBT</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+    }
+
+    h1 {
+      color: #00ffd5;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00ffd5;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #00c7a3;
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .normal     { color: #ffffff; background: #333; }
+    .suci       { color: #66ffcc; background: #1b1b1b; }
+    .tertolong  { color: #ff0066; background: #2b000d; }
+    .malaikat   { color: #99ccff; background: #002244; }
+    .bukanmanusia { color: #ffcc00; background: #3a2f00; }
+    .mati       { color: #ff0000; background: #330000; }
+  </style>
+</head>
+<body>
+
+  <h1>Hitung Persentase LGBT Berdasarkan Nama</h1>
+  <input type="text" id="namaInput" placeholder="Masukkan nama kamu...">
+  <button onclick="hitungLGBT()">Hitung</button>
+
+  <div id="hasilOutput" class="result normal">Masukkan nama untuk melihat hasil.</div>
+
+  <script>
+    const nilaiHuruf = {
+      a: -12, b: 10, c: -8, d: 9, e: -14, f: 11, g: -6, h: 15, i: -5, j: 12,
+      k: -20, l: 18, m: -7, n: 20, o: -9, p: 13, q: -1000, r: 17, s: -4,
+      t: 16, u: -11, v: -1000, w: 19, x: 10000, y: -3, z: 10000
+    };
+
+    function hitungLGBT() {
+      const input = document.getElementById("namaInput").value.toLowerCase();
+      let total = 0;
+
+      for (let i = 0; i < input.length; i++) {
+        const huruf = input[i];
+        if (nilaiHuruf.hasOwnProperty(huruf)) {
+          total += nilaiHuruf[huruf];
+        }
+      }
+
+      if (total > 100000) total = 100000;
+
+      let pesan = "";
+      let kelas = "normal";
+
+      if (total <= -1000) {
+        pesan = "Bro kau malaikat 😇 (" + total + "%)";
+        kelas = "malaikat";
+      } else if (total <= -800) {
+        pesan = "Bro kau bukan manusia ‼ (" + total + "%)";
+        kelas = "bukanmanusia";
+      } else if (total < 0) {
+        pesan = "Bro anda sangat suci ✨ (" + total + "%)";
+        kelas = "suci";
+      } else if (total === 1) {
+        pesan = "Bro kau masih normal 🙂 (" + total + "%)";
+        kelas = "normal";
+      } else if (total === 100) {
+        pesan = "Bro kau sudah tidak tertolong 😭 (" + total + "%)";
+        kelas = "tertolong";
+      } else if (total >= 10000) {
+        pesan = "Bro kau pantas mati 💀 (" + total + "%)";
+        kelas = "mati";
+      } else {
+        pesan = "Persentase LGBT-mu: " + total + "%";
+        kelas = "normal";
+      }
+
+      const hasil = document.getElementById("hasilOutput");
+      hasil.innerText = pesan;
+      hasil.className = "result " + kelas;
+    }
+  </script>
+
+</body>
+</html>
