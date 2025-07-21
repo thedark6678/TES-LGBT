@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Deteksi Persentase LGBT</title>
+  <title>cek kewarasan</title>
   <style>
     body {
       background-color: #111;
@@ -54,7 +54,7 @@
 </head>
 <body>
 
-  <h1>Deteksi Persentase LGBT</h1>
+  <h1>apakah kau belok</h1>
 
   <input type="text" id="namaInput" placeholder="Masukkan nama kamu...">
   <button onclick="hitungLGBT()">Hitung</button>
@@ -65,7 +65,7 @@
     <input type="text" id="premiumNama" placeholder="Nama premium">
     <input type="text" id="pesanPremium" placeholder="Pesan custom">
     <button onclick="tambahPremium()">Tambahkan</button>
-    <p style="font-size: 14px; color: #aaa;">PUB OP Citer akan muncul saat nama digunakan. Persentase: 0%</p>
+    <p style="font-size: 14px; color: #aaa;">Akses ini hanya tersedia untuk developer.<br>Persentase user premium: <b>0%</b></p>
   </div>
 
   <script>
@@ -76,11 +76,7 @@
     };
 
     let namaPremium = {
-      "rahmat": "Mod palsu!",
-      "premiumguy": "Langganan gayverse!",
-      "supercepat": "Kau pake cheat ya?",
-      "fnxy": "Pemain editan FNXY!",
-      "kyoromi": "Bocah penuh misteri!"
+      "rahmat": "ampun dev",
     };
 
     let developerAktif = false;
@@ -105,11 +101,11 @@
       const hasil = document.getElementById("hasilOutput");
       const formPremium = document.getElementById("formPremium");
 
-      // Developer akses
+      // Jika developer
       if (input === "developer") {
         developerAktif = true;
         formPremium.style.display = "block";
-        hasil.innerText = "🔓 Mode developer aktif! Kamu bisa menambah user premium.";
+        hasil.innerText = "🔓 Mode developer aktif! Sekarang kamu bisa menambahkan user premium.";
         hasil.className = "result";
         return;
       }
@@ -117,7 +113,9 @@
       // Jika nama termasuk premium
       if (namaPremium.hasOwnProperty(input)) {
         const kode = Math.floor(Math.random() * 90000) + 10000;
-        hasil.innerText = 💻 Halah citer! ${namaPremium[input]} 🗿 (PUB OP CODE: ${kode})\nPersentase: 0%;
+        hasil.innerHTML = `
+           ${namaPremium[input]}
+        `;
         hasil.className = "result citer";
         return;
       }
@@ -141,7 +139,7 @@
       const pesan = document.getElementById("pesanPremium").value.trim();
 
       if (!developerAktif) {
-        alert("Kamu harus masuk sebagai developer dulu (masukkan 'developer' lalu klik Hitung).");
+        alert("kau bukan dev");
         return;
       }
 
@@ -151,7 +149,7 @@
         document.getElementById("premiumNama").value = '';
         document.getElementById("pesanPremium").value = '';
       } else {
-        alert("❗Isi nama dan pesan dulu ya.");
+        alert("infut nama");
       }
     }
   </script>
