@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek Kewarasan</title>
+  <style>
+    body {
+      background-color: #020202;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background-color: #00ffd5;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 20px;
+      text-align: center;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #222;
+    }
+    .citer {
+      background-color: #440000;
+      color: #ff4b4b;
+      font-weight: bold;
+    }
+    .form-box {
+      background-color: #1a1a1a;
+      padding: 15px;
+      margin-top: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      display: none;
+    }
+    h1, h2 {
+      color: #00ffd5;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Apakah Kau Belok?</h1>
+
+  <input type="text" id="namaInput" placeholder="Masukkan nama kamu...">
+  <button onclick="hitungLGBT()">Periksa</button>
+  <div id="hasilOutput" class="result">Masukkan nama terlebih dahulu.</div>
+
+  <div class="form-box" id="formPremium">
+    <h2>Tambah User Premium</h2>
+    <input type="text" id="premiumNama" placeholder="Nama premium">
+    <input type="text" id="pesanPremium" placeholder="Pesan custom">
+    <button onclick="tambahPremium()">Tambahkan</button>
+    <p style="font-size: 14px; color: #aaa;">Akses ini hanya tersedia untuk developer.<br>Persentase user premium: <b>0%</b></p>
+  </div>
+
+  <script>
+    const nilaiHuruf = {
+      a: -12, b: 10, c: -8, d: 9, e: -14, f: 11, g: -6, h: 15, i: -5, j: 12,
+      k: -20, l: 18, m: -7, n: 20, o: -9, p: 13, q: -1000, r: 17, s: -4,
+      t: 16, u: -11, v: -1000, w: 19, x: 10000, y: -3, z: 10000
+    };
+
+    let namaPremium = {}; // Kosong dulu, akan diisi dari localStorage
+    let developerAktif = false;
+
+    // Load data dari localStorage saat halaman dibuka
+    const dataSebelumnya = localStorage.getItem("premiumData");
+    if (dataSebelumnya) {
+      namaPremium = JSON.parse(dataSebelumnya);
+    }
+
+    function getPesan(persen) {
+      if (persen <= -1000) return "🪽 Bro kau malaikat sejati (" + persen + "%)";
+      if (persen <= -800) return "🧬 Bro kau bukan manusia (" + persen + "%)";
+      if (persen < 0) return "✨ Bro anda sangat suci (" + persen + "%)";
+      if (persen === 0) return "⚪ Bro netral suci, belum tersentuh (0%)";
+      if (persen <= 20) return "🙂 Bro kau masih normal (" + persen + "%)";
+      if (persen <= 40) return "🤨 Bro kau rada curiga sih (" + persen + "%)";
+      if (persen <= 60) return "😬 Bro kau diambang batas (" + persen + "%)";
+      if (persen <= 80) return "😳 Bro kau nggak bisa diselamatkan (" + persen + "%)";
+      if (persen <= 99) return "💀 Bro kau hampir tamat (" + persen + "%)";
+      if (persen === 100) return "☠ Bro kau sudah tidak tertolong (100%)";
+      if (persen < 10000) return "🔥 Bro kau meluncur ke neraka (" + persen + "%)";
+      return "💣 Bro kau pantas mati (" + persen + "%)";
+    }
+
+    function hitungLGBT() {
+      const input = document.getElementById("namaInput").value.trim().toLowerCase();
+      const hasil = document.getElementById("hasilOutput");
+      const formPremium = document.getElementById("formPremium");
+
+      if (input === "r") {
+        developerAktif = true;
+        formPremium.style.display = "block";
+        hasil.innerText = "mode devloper on.";
+        hasil.className = "result";
+        return;
+      }
+
+      if (namaPremium.hasOwnProperty(input)) {
+        hasil.innerHTML = `
+          ${namaPremium[input]}<br>
+          <strong>    </strong>
+        `;
+        hasil.className = "result citer";
+        return;
+      }
+
+      let total = 0;
+      for (let i = 0; i < input.length; i++) {
+        const huruf = input[i];
+        if (nilaiHuruf.hasOwnProperty(huruf)) {
+          total += nilaiHuruf[huruf];
+        }
+      }
+
+      if (total > 100000) total = 100000;
+      hasil.innerText = getPesan(total);
+      hasil.className = "result";
+    }
+
+    function tambahPremium() {
+      const nama = document.getElementById("premiumNama").value.trim().toLowerCase();
+      const pesan = document.getElementById("pesanPremium").value.trim();
+
+      if (!developerAktif) {
+      alert("❌ Kau bukan dev. Akses ditolak.");
+      return;
+      }
+
+      if (nama && pesan) {
+      namaPremium[nama] = pesan;
+      localStorage.setItem("premiumData", JSON.stringify(namaPremium)); // Simpan ke browser
+      alert(`✅ Nama premium "${nama}" berhasil ditambahkan.`);
+      document.getElementById("premiumNama").value = '';
+      document.getElementById("pesanPremium").value = '';
+      tampilkanDaftarPremium();
+      } else {
+      alert("❗ Isi nama dan pesan dulu ya.");
+      }
+    }
+
+    function hapusPremium(nama) {
+      if (!developerAktif) {
+      alert("❌ Kau bukan dev. Akses ditolak.");
+      return;
+      }
+      if (namaPremium.hasOwnProperty(nama)) {
+      delete namaPremium[nama];
+      localStorage.setItem("premiumData", JSON.stringify(namaPremium));
+      alert(`🚫 Nama premium "${nama}" berhasil dihapus.`);
+      tampilkanDaftarPremium();
+      }
+    }
+    // Fitur hapus premium lewat input nama
+    function hapusPremiumViaInput() {
+      const nama = document.getElementById("premiumNama").value.trim().toLowerCase();
+      if (!developerAktif) {
+      alert("❌ Kau bukan dev. Akses ditolak.");
+      return;
+      }
+      if (nama && namaPremium.hasOwnProperty(nama)) {
+      delete namaPremium[nama];
+      localStorage.setItem("premiumData", JSON.stringify(namaPremium));
+      alert(`🚫 Nama premium "${nama}" berhasil dihapus lewat input.`);
+      document.getElementById("premiumNama").value = '';
+      tampilkanDaftarPremium();
+      } else {
+      alert("❗ Nama tidak ditemukan atau kosong.");
+      }
+    }
+
+    // Tambahkan tombol hapus di form premium
+    document.addEventListener("DOMContentLoaded", function() {
+      const formPremium = document.getElementById("formPremium");
+      if (formPremium) {
+      const hapusBtn = document.createElement("button");
+      hapusBtn.innerText = "delete";
+      hapusBtn.style.background = "#ff4b4b";
+      hapusBtn.style.color = "#fff";
+      hapusBtn.style.marginLeft = "10px";
+      hapusBtn.onclick = hapusPremiumViaInput;
+      const premiumNamaInput = document.getElementById("premiumNama");
+      premiumNamaInput.parentNode.insertBefore(hapusBtn, premiumNamaInput.nextSibling);
+      }
+    });
+
+    // Daftar nama premium ditampilkan di tampilkanDaftarPremium (sudah ada tombol hapus di sana)
+    function tampilkanDaftarPremium() {
+      const daftarDiv = document.getElementById("daftarPremium");
+      if (!daftarDiv) return;
+      daftarDiv.innerHTML = "";
+      const keys = Object.keys(namaPremium);
+      if (keys.length === 0) {
+      daftarDiv.innerHTML = "<p style='color:#aaa;'>Belum ada user premium.</p>";
+      return;
+      }
+      keys.forEach(nama => {
+      const pesan = namaPremium[nama];
+      const item = document.createElement("div");
+      item.style.marginBottom = "8px";
+      item.innerHTML = `<b>${nama}</b>: ${pesan} <button style="margin-left:10px;background:#ff4b4b;color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;" onclick="hapusPremium('${nama}')">Hapus</button>`;
+      daftarDiv.appendChild(item);
+      });
+    }
+
+    // Tampilkan daftar saat mode developer aktif
+    document.getElementById("formPremium").addEventListener("show", tampilkanDaftarPremium);
+document.getElementById("namaInput").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    hitungLGBT();
+  }
+});
+  </script>
+
+</body>
+</html>
